@@ -1,0 +1,295 @@
+
+<div id="firstId">
+  README:<br>
+  Tested in chrome on 1366*1024 using imgur image API
+  <li>
+    To intialize simpleuploader run in console<br>
+    <code>new SimpleUploader({id:'firstId','checks':'.png,.jpg'})</code>
+  </li>
+  <li>
+    You can also pass option for upload url as 'upload_url'
+  </li>
+  <li>
+    You can also pass option for file param name as 'pname'
+  </li>
+  <li>
+    You can also add extra params by button.
+  </li>
+</div>
+
+<script>
+var SimpleUploader;
+SimpleUploader = function SimpleUploader(params){
+  if (typeof params != 'object' || !params['id'] ){
+    throw new Error('invalid params, check documentation');
+    return;
+  }
+  this.add_container(params.id,document.body);
+  this.extra_params=0;
+  this.eleId=params.id;
+  this.checks=params.checks ? params.checks:'.png,.jpg';
+  this.upload_url=params.upload_url ? params.upload_url:'https://api.imgur.com/3/image';
+  this.pname=params.pname ? params.pname:'image';
+  this.add_inputs();
+},
+SimpleUploader.prototype.add_container=function(eleId,parent){
+  var container=document.getElementById(eleId);
+  if(!container){
+    container=document.createElement('div');
+    container.id=eleId;
+    container.style.position='relative';
+    parent.appendChild(container);
+  }else{
+    container.style.position='relative';
+    container.innerHTML='';
+  }
+  return container;
+},
+SimpleUploader.prototype.add_inputs=function(){
+  this.add_input({
+    placeholder:'This is SimpleUploader for id: '+this.eleId,
+    tag:'div',
+    id:'header'
+  },this.eleId);
+  this.add_input({
+    type:'file',
+    tag:'input',
+    id:this.eleId+'file',
+    name:'file',
+    placeholder:'Upload file',
+    checks:this.checks,
+    callback_change:this.on_file_change.bind(this)
+  },this.eleId);
+  this.add_input({
+    type:'text',
+    tag:'input',
+    id:this.eleId+'upload_url',
+    name:'upload_url',
+    placeholder:'Change here upload url',
+    value:this.upload_url
+  },this.eleId);
+  this.add_input({
+    type:'text',
+    tag:'input',
+    id:this.eleId+'pname',
+    name:'pname',
+    placeholder:'Change here file param name',
+    value:this.pname
+  },this.eleId);
+  this.add_input({
+    tag:'button',
+    id:this.eleId+'add_param',
+    name:'parambtn',
+    placeholder:'Add new key value param',
+    callback:this.add_param_input.bind(this)
+  },this.eleId);
+  this.add_input({
+    tag:'button',
+    id:this.eleId+'submit',
+    name:'submitbtn',
+    placeholder:'Submit File',
+    callback:this.submit_input.bind(this)
+  },this.eleId);
+},
+SimpleUploader.prototype.add_input=function(params,eleId){
+  var element=this.new_ele(params);
+  var container=document.getElementById(eleId);
+  container.appendChild(element);
+},
+SimpleUploader.prototype.new_ele=function(params){
+  var ele=document.createElement(params.tag);
+  ele.id=params.id;
+
+  ele.name=params.name?params.name:'';
+  ele.title=params.placeholder?params.placeholder:'';
+  ele.placeholder=params.placeholder?params.placeholder:'';
+  ele.innerText=params.placeholder?params.placeholder:'';
+  if (params.type){
+    ele.type=params.type;
+  };
+  if (params.value){
+    ele.value=params.value;
+  };
+  if (params.checks){
+    ele.accept=params.checks;
+  };
+  if (params.callback){
+    ele.addEventListener('click', function (evt) {
+      params.callback();
+    });
+  };
+  if (params.callback_change){
+    ele.addEventListener('change', function (evt) {
+      params.callback_change(evt);
+    });
+  };
+  return ele
+},
+SimpleUploader.prototype.add_param_input=function(){
+  this.extra_params+=1;
+  var extra_param_container_id=this.eleId+'-extra-params';
+  if(!document.getElementById(extra_param_container_id)){
+    var container=document.getElementById(this.eleId);
+    this.add_container(extra_param_container_id,container);
+  }
+  this.add_input({
+    type:'text',
+    id:'extra-key'+String(this.extra_params),
+    tag:'input',
+    name:'extra-key',
+    placeholder:'Add extra param key'
+  },extra_param_container_id);
+  this.add_input({
+    type:'text',
+    tag:'input',
+    id:'extra-value'+String(this.extra_params),
+    name:'extra-value',
+    placeholder:'Add extra param value'
+  },extra_param_container_id);
+  this.add_input({
+    tag:'button',
+    id:'remove_param'+String(this.extra_params),
+    name:'rmvbtn',
+    placeholder:'Remove key value pair',
+    callback:this.remove_param_input.bind(this,this.extra_params)
+  },extra_param_container_id);
+},
+SimpleUploader.prototype.remove_param_input=function(val){
+  document.getElementById('extra-key'+String(val)).remove();
+  document.getElementById('extra-value'+String(val)).remove();
+  document.getElementById('remove_param'+String(val)).remove();
+},
+SimpleUploader.prototype.on_file_change=function(e){
+  var img=document.getElementById('img'+this.eleId);
+  if (img){img.remove()};
+  img=document.createElement('img');
+  img.id='img'+this.eleId;
+  var container=document.getElementById(this.eleId);
+  var oFR = new FileReader();
+  var fl=document.getElementById(this.eleId+'file').files[0];
+  if (!fl){return;}
+  oFR.readAsDataURL(fl);
+  oFR.onload = function (ev) {
+    if (fl.type.match('image.*')) {
+      img.src=ev.target.result;
+      container.appendChild(img);
+    }else{
+      console.log('it is not an image');
+    }
+  };
+}
+SimpleUploader.prototype.submit_input=function(){
+  var that=this;
+  var formData = new FormData();
+  var upload_url = document.getElementById(this.eleId+'upload_url').value;
+  upload_url=upload_url ? upload_url:'https://api.imgur.com/3/image';
+  var extra_params = document.getElementById(this.eleId+'-extra-params');
+  if (extra_params){
+    extra_params=extra_params.children;
+    for (var i=0; i<extra_params.length; i+=3) {
+      let key=extra_params[i].value;
+      if (key){
+          formData.append(key,extra_params[i+1].value)
+      }
+    }
+  }
+  var fl=document.getElementById(this.eleId+'file').files;
+  if (fl.length){
+    fl=fl[0];
+    var fl_name=fl.name;
+    var fl_param_name=document.getElementById(this.eleId+'pname').value;
+    fl_param_name=fl_param_name?fl_param_name:'image';
+    formData.append(fl_param_name, fl,fl_name );
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST',upload_url, true);
+    xhr.setRequestHeader('Authorization','Client-ID 2e56de818495150');
+    var text='Uploading data:';
+    for (var pair of formData.entries()) {
+        text+=String(pair[0])+ ', ' + String(pair[1])+';';
+    }
+    alert(text);
+    xhr.send(formData);
+    xhr.onreadystatechange = function (oEvent) {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          alert(xhr.responseText+'  It was a success, will reinit page');
+          setTimeout(function(){
+              new SimpleUploader({id:that.eleId,'checks':that.checks,'upload_url':this.upload_url,'pname':this.pname});
+          }, 500);
+        } else {
+          alert( xhr.responseText)
+        }
+      }
+    }
+  }else{
+    alert('select a file')
+  }
+}
+</script>
+<script>
+
+(function(proxied) {
+  window.alert = function() {
+    var ele=document.getElementById('alert-custom');
+    if(ele){
+      ele.remove();
+    }
+    ele=document.createElement('div');
+    ele.id='alert-custom';
+    ele.innerHTML='This is logs : <br></br>'+arguments[0];
+    document.body.append(ele);
+  };
+})(window.alert);
+</script>
+<style>
+input[name=file] {
+    display: block;
+    margin: 10px 0px;
+}
+button[name=submitbtn]{
+    position: absolute;
+    top: 0px;
+    left: 17%;
+    background-color: #8BC34A;
+    color: white;
+    height: 31px;
+}
+button[name=rmvbtn]{
+  color: white;
+   background: red;
+   display: block;
+    margin-bottom: 31px;
+
+}
+input{
+  margin: 4px;
+}
+div#alert-custom {
+    position: absolute;
+    right: 13%;
+    top: 18px;
+    background: rgba(255, 255, 0, 0.1);
+    transition: 1s all;
+}
+div#alert-custom {
+    position: absolute;
+    right: 13%;
+    top: 18px;
+    background: rgba(255, 255, 0, 0.1);
+    transition: 1s all;
+    width: 300px;
+    word-wrap: break-word;
+    padding: 18px;
+}
+img{
+  height: 150px;
+  display: block;
+}
+#header{
+  width: 173px;
+background: whitesmoke;
+}
+</style>
+<script>
+new SimpleUploader({id:'firstId','checks':'.png,.jpg'});
+</script>
