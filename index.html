@@ -103,7 +103,8 @@ SimpleUploader.prototype.new_ele=function(params){
   ele.name=params.name?params.name:'';
   ele.title=params.placeholder?params.placeholder:'';
   ele.placeholder=params.placeholder?params.placeholder:'';
-//   ele.innerText=params.placeholder?params.placeholder:'';
+  if(ele.innerText)
+    ele.innerText=params.placeholder?params.placeholder:'';
   if (params.type){
     ele.type=params.type;
   };
@@ -237,7 +238,7 @@ SimpleUploader.prototype.submit_input=function(){
     ele=document.createElement('div');
     ele.id='alert-custom';
     ele.innerHTML='This is logs : <br></br>'+arguments[0];
-    document.body.append(ele);
+    document.body.appendChild(ele);
   };
 })(window.alert);
 </script>
