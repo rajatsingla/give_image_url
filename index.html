@@ -1,296 +1,88 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-<div id="firstId">
-  README:<br>
-  Tested in chrome on 1366*1024 using imgur image API
-  <li>
-    To intialize simpleuploader run in console<br>
-    <code>new SimpleUploader({id:'firstId','checks':'.png,.jpg'})</code>
-  </li>
-  <li>
-    You can also pass option for upload url as 'upload_url'
-  </li>
-  <li>
-    You can also pass option for file param name as 'pname'
-  </li>
-  <li>
-    You can also add extra params by button.
-  </li>
-</div>
+    <title>Give Image URL</title>
+    <meta name="description" content="Give your local image a url">
 
-<script>
-var SimpleUploader;
-SimpleUploader = function SimpleUploader(params){
-  if (typeof params != 'object' || !params['id'] ){
-    throw new Error('invalid params, check documentation');
-    return;
-  }
-  this.add_container(params.id,document.body);
-  this.extra_params=0;
-  this.eleId=params.id;
-  this.checks=params.checks ? params.checks:'.png,.jpg';
-  this.upload_url=params.upload_url ? params.upload_url:'https://api.imgur.com/3/image';
-  this.pname=params.pname ? params.pname:'image';
-  this.add_inputs();
-},
-SimpleUploader.prototype.add_container=function(eleId,parent){
-  var container=document.getElementById(eleId);
-  if(!container){
-    container=document.createElement('div');
-    container.id=eleId;
-    container.style.position='relative';
-    parent.appendChild(container);
-  }else{
-    container.style.position='relative';
-    container.innerHTML='';
-  }
-  return container;
-},
-SimpleUploader.prototype.add_inputs=function(){
-  this.add_input({
-    placeholder:'This is SimpleUploader for id: '+this.eleId,
-    tag:'div',
-    id:'header'
-  },this.eleId);
-  this.add_input({
-    type:'file',
-    tag:'input',
-    id:this.eleId+'file',
-    name:'file',
-    placeholder:'Upload file',
-    checks:this.checks,
-    callback_change:this.on_file_change.bind(this)
-  },this.eleId);
-  this.add_input({
-    type:'text',
-    tag:'input',
-    id:this.eleId+'upload_url',
-    name:'upload_url',
-    placeholder:'Change here upload url',
-    value:this.upload_url
-  },this.eleId);
-  this.add_input({
-    type:'text',
-    tag:'input',
-    id:this.eleId+'pname',
-    name:'pname',
-    placeholder:'Change here file param name',
-    value:this.pname
-  },this.eleId);
-  this.add_input({
-    tag:'button',
-    id:this.eleId+'add_param',
-    name:'parambtn',
-    placeholder:'Add new key value param',
-    callback:this.add_param_input.bind(this)
-  },this.eleId);
-  this.add_input({
-    tag:'button',
-    id:this.eleId+'submit',
-    name:'submitbtn',
-    placeholder:'Submit File',
-    callback:this.submit_input.bind(this)
-  },this.eleId);
-},
-SimpleUploader.prototype.add_input=function(params,eleId){
-  var element=this.new_ele(params);
-  var container=document.getElementById(eleId);
-  container.appendChild(element);
-},
-SimpleUploader.prototype.new_ele=function(params){
-  var ele=document.createElement(params.tag);
-  ele.id=params.id;
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Give Image URL">
+    <meta property="og:description" content="Give your local image a url">
+    <meta property="og:image" content="">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    
+    <link rel="shortcut icon" type="image/ico" href="http://rajatsingla.in/favicon.ico">
+    <style>
+    	#firstIdfile,button{width:100%;line-height:25px;transform:scaleX(1.0012)}body{background-color:#f9fafb;position:relative;font-family:"Comic Sans MS",cursive,sans-serif;letter-spacing:.01rem;font-size:1.8rem;line-height:1.75em;color:#71757b;padding:35px 35px 100px}.main-content{border-width:1px;border-color:#edf0f4;border-style:solid;background-color:#fff;box-shadow:9px 16px 20.79px .21px rgba(219,222,228,.6);max-width:875px;height:275px;margin:auto;padding:4.2% 2.5%;text-align:center;position:relative}#firstIdfile,.main-content.link-content .link-div{border-width:1px;border-color:#71757b;border-style:solid}.tagline{color:#113e89;font-size:28px;font-weight:400;line-height:25px;text-align:center;margin-bottom:50px}#firstIdfile{max-width:630px;font-size:15px;text-align:right}input[type=file]::-webkit-file-upload-button{background-color:#113e89;width:190px;height:40px;color:#fff;font-size:15px;line-height:23px;text-align:center;transform:scaleX(1.0012)}.content-wrapper{text-align:center;width:100%;max-width:630px;margin:auto}.meta-button{display: block;cursor: pointer;color:#71757b;font-size:14px;line-height:25px;text-align:right;margin-top:14.5px}#firstIdsubmit{max-width:400px}button{background-color:#113e89;height:42px;color:#fff;font-size:15px;text-align:center;margin-top:50px;cursor:pointer}.site-footer{color:#BBC7CC;bottom:0;font-size:12px;position:absolute;margin:0 35px;left:0;right:0}.site-footer a{color:#BBC7CC;text-decoration:none;font-weight:700}section.copyright{width:45%;float:left}section.poweredby{float:right;width:45%;text-align:right}.main-content.link-content{display: none;padding:2% 2.5% 3%;margin-top:3px;height:auto}.main-content.link-content .content-wrapper{display:flex;flex-wrap:wrap;height:auto}.main-content.link-content .tagline{margin-bottom:25px;font-size:24px;width:100%}.main-content.link-content .link-div{font-size:15px;flex:3;padding:14px}.main-content.link-content button{float:right;flex:1;margin:0 0 0 26px;height:auto}.progress-bar{position:absolute;width:0;transition:width 1s;height:2px;background:#103e89;top:0;left:0}.error{text-align:center;width:100%;font-size:20px} li.each-link{font-size: 18px;margin: auto;width: 100%;list-style: none;} .close-links{position: absolute;bottom: -12px;right: 6px;font-size: 12px;cursor: pointer;} img.link-img{border-radius: 3px;box-shadow: 1px 1px 1px rgba(16, 62, 137, 0.47);position: relative;vertical-align: middle;margin-right: 12px;}@media only screen and (max-width:640px){li.each-link{font-size: 15px;} body{padding:5px 5px 100px}.tagline{font-size:20px}input[type=file]{font-size:13px}input[type=file]::-webkit-file-upload-button{width:90px;font-size:13px}.error{font-size:15px}section.copyright,section.poweredby{width:100%;text-align:center}.main-content.link-content .tagline{font-size:18px}.main-content.link-content button{margin:10px 0 0;height:40px;flex: auto;}} .noselect{-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;} .main-content.link-content.display_block{display: block;}
+	</style>
 
-  ele.name=params.name?params.name:'';
-  ele.title=params.placeholder?params.placeholder:'';
-  ele.placeholder=params.placeholder?params.placeholder:'';
-  if(ele.innerText)
-    ele.innerText=params.placeholder?params.placeholder:'';
-  if (params.type){
-    ele.type=params.type;
-  };
-  if (params.value){
-    ele.value=params.value;
-  };
-  if (params.checks){
-    ele.accept=params.checks;
-  };
-  if (params.callback){
-    ele.addEventListener('click', function (evt) {
-      params.callback();
-    });
-  };
-  if (params.callback_change){
-    ele.addEventListener('change', function (evt) {
-      params.callback_change(evt);
-    });
-  };
-  return ele
-},
-SimpleUploader.prototype.add_param_input=function(){
-  this.extra_params+=1;
-  var extra_param_container_id=this.eleId+'-extra-params';
-  if(!document.getElementById(extra_param_container_id)){
-    var container=document.getElementById(this.eleId);
-    this.add_container(extra_param_container_id,container);
-  }
-  this.add_input({
-    type:'text',
-    id:'extra-key'+String(this.extra_params),
-    tag:'input',
-    name:'extra-key',
-    placeholder:'Add extra param key'
-  },extra_param_container_id);
-  this.add_input({
-    type:'text',
-    tag:'input',
-    id:'extra-value'+String(this.extra_params),
-    name:'extra-value',
-    placeholder:'Add extra param value'
-  },extra_param_container_id);
-  this.add_input({
-    tag:'button',
-    id:'remove_param'+String(this.extra_params),
-    name:'rmvbtn',
-    placeholder:'Remove key value pair',
-    callback:this.remove_param_input.bind(this,this.extra_params)
-  },extra_param_container_id);
-},
-SimpleUploader.prototype.remove_param_input=function(val){
-  document.getElementById('extra-key'+String(val)).remove();
-  document.getElementById('extra-value'+String(val)).remove();
-  document.getElementById('remove_param'+String(val)).remove();
-},
-SimpleUploader.prototype.on_file_change=function(e){
-  var img=document.getElementById('img'+this.eleId);
-  if (img){img.remove()};
-  img=document.createElement('img');
-  img.id='img'+this.eleId;
-  var container=document.getElementById(this.eleId);
-  var oFR = new FileReader();
-  var fl=document.getElementById(this.eleId+'file').files[0];
-  if (!fl){return;}
-  oFR.readAsDataURL(fl);
-  oFR.onload = function (ev) {
-    if (fl.type.match('image.*')) {
-      img.src=ev.target.result;
-      container.appendChild(img);
-    }else{
-      console.log('it is not an image');
-    }
-  };
-}
-SimpleUploader.prototype.submit_input=function(){
-  var that=this;
-  var formData = new FormData();
-  var upload_url = document.getElementById(this.eleId+'upload_url').value;
-  upload_url=upload_url ? upload_url:'https://api.imgur.com/3/image';
-  var extra_params = document.getElementById(this.eleId+'-extra-params');
-  if (extra_params){
-    extra_params=extra_params.children;
-    for (var i=0; i<extra_params.length; i+=3) {
-      let key=extra_params[i].value;
-      if (key){
-          formData.append(key,extra_params[i+1].value)
-      }
-    }
-  }
-  var fl=document.getElementById(this.eleId+'file').files;
-  if (fl.length){
-    fl=fl[0];
-    var fl_name=fl.name;
-    var fl_param_name=document.getElementById(this.eleId+'pname').value;
-    fl_param_name=fl_param_name?fl_param_name:'image';
-    formData.append(fl_param_name, fl,fl_name );
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST',upload_url, true);
-    xhr.setRequestHeader('Authorization','Client-ID 2e56de818495150');
-    var text='Uploading data:';
-    for (var pair of formData.entries()) {
-        text+=String(pair[0])+ ', ' + String(pair[1])+';';
-    }
-    alert(text);
-    xhr.send(formData);
-    xhr.onreadystatechange = function (oEvent) {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          alert(xhr.responseText+'  It was a success, will reinit page');
-          setTimeout(function(){
-              new SimpleUploader({id:that.eleId,'checks':that.checks,'upload_url':this.upload_url,'pname':this.pname});
-          }, 500);
-        } else {
-          alert( xhr.responseText)
-        }
-      }
-    }
-  }else{
-    alert('select a file')
-  }
-}
-</script>
-<script>
+</head>
 
-(function(proxied) {
-  window.alert = function() {
-    var ele=document.getElementById('alert-custom');
-    if(ele){
-      ele.remove();
-    }
-    ele=document.createElement('div');
-    ele.id='alert-custom';
-    ele.innerHTML='This is logs : <br></br>'+arguments[0];
-    document.body.appendChild(ele);
-  };
-})(window.alert);
-</script>
-<style>
-input[name=file] {
-    display: block;
-    margin: 10px 0px;
-}
-button[name=submitbtn]{
-    position: absolute;
-    top: 0px;
-    left: 17%;
-    background-color: #8BC34A;
-    color: white;
-    height: 31px;
-}
-button[name=rmvbtn]{
-  color: white;
-   background: red;
-   display: block;
-    margin-bottom: 31px;
+<body>
+	
+	<div id="app">
+		<div class="main-content">
+			<div class="progress-bar" v-bind:style="{ width: progress + '%' }"></div>
+			<div class="content-wrapper">
+				<div class="tagline">
+					Shareable <strong>Image URL</strong> generator
+				</div>
+				<input id="firstIdfile" name="file" 
+				title="Upload file" placeholder="Upload file" type="file" accept=".png,.jpg">	
+				<a class="meta-button noselect" v-on:click="show_links">All Generated Links</a>
+				<button v-on:click="generate" id="firstIdsubmit" name="submitbtn" title="Generate Link" 
+				v-bind:disabled="disable_button">
+					Generate Link
+				</button>
+			</div>
+		</div>
 
-}
-input{
-  margin: 4px;
-}
-div#alert-custom {
-    position: absolute;
-    right: 13%;
-    top: 18px;
-    background: rgba(255, 255, 0, 0.1);
-    transition: 1s all;
-}
-div#alert-custom {
-    position: absolute;
-    right: 13%;
-    top: 18px;
-    background: rgba(255, 255, 0, 0.1);
-    transition: 1s all;
-    width: 300px;
-    word-wrap: break-word;
-    padding: 18px;
-}
-img{
-  height: 150px;
-  display: block;
-}
-#header{
-  width: 173px;
-background: whitesmoke;
-}
-</style>
-<script>
-new SimpleUploader({id:'firstId','checks':'.png,.jpg'});
-</script>
+		<div v-if="link_generated" class="main-content link-content" v-bind:class="{ display_block: loaded }">
+			<div class="content-wrapper">
+				<div class="tagline">
+					Shareable <a v-bind:href="link" target="new">Link</a> generated
+				</div>
+				<input type="text" v-bind:value="link" readonly="" class="link-div" id="link-div">
+				<button id="copybutton" name="copybutton" v-bind:title="copy_title" v-on:click="copy">
+					{{copy_title}}
+				</button>
+				
+			</div>
+		</div>
+
+		<div v-if="error.length>0" class="main-content link-content" v-bind:class="{ display_block: loaded }">
+			<div class="content-wrapper">
+				<div class="error">
+					{{error}}
+				</div>
+			</div>
+		</div>
+
+		<div v-if="showing_links" class="main-content link-content" v-bind:class="{ display_block: loaded }">
+			<div class="content-wrapper">
+					<span v-on:click="close_links" class="close-links">close</span>
+					<ul style="margin: auto;text-align: left;padding:0;">
+			 			<li v-for="item in JSON.parse(localStorage.links)" class="each-link">
+				    		<img height="30" width="30" v-bind:src="item" class="link-img">{{ item }}
+				  		</li>
+				  	</ul>
+			</div>
+		</div>
+	</div>	
+
+
+	<footer class="site-footer clearfix">
+      <section class="copyright">
+        <a href="http://rajatsingla.in">Rajat's Blog</a> ©
+              • All rights reserved.
+      </section>
+      <section class="poweredby">Design by Tanmai Sharma
+        <a href="https://www.behance.net/tanmaisharma" target="new">tanny</a>
+      </section>
+    </footer>
+    <script>
+    	if(localStorage||(localStorage={},localStorage.links=JSON.stringify([])),localStorage){let e="";try{e=JSON.parse(localStorage.links)}catch(e){console.log("reintializing localStorage links")}"object"!=typeof e&&(localStorage.links=JSON.stringify([]))}var app=new Vue({el:"#app",data:{upload_url:"https://api.imgur.com/3/image",pname:"image",loaded:true,link:"",link_generated:!1,progress:0,error:"",copy_title:"Copy the Link",showing_links:!1,disable_button:!1,progress_handler:function(e){e.lengthComputable&&(this.progress=e.loaded/e.total*100)}},methods:{generate:function(){var e=this;e.error="",e.copy_title="Copy Link",e.link_generated=!1;var t=new FormData,n=this.upload_url,i=this.pname,l=document.getElementById("firstIdfile").files;if(l.length){e.disable_button=1;var o=(l=l[0]).name;t.append(i,l,o);var a=new XMLHttpRequest;a.upload.addEventListener("progress",this.progress_handler.bind(this)),a.open("POST",n,!0),a.setRequestHeader("Authorization","Client-ID 2e56de818495150"),a.send(t),a.onreadystatechange=function(t){if(e.disable_button=!1,4===a.readyState)if(200===a.status){document.getElementById("firstIdfile").value="",e.link_generated=!0,e.link=JSON.parse(a.response).data.link;let t=JSON.parse(localStorage.links)||[];t.push(e.link),localStorage.links=JSON.stringify(t),console.log(e.link),e.progress=0}else e.error="Something went wrong, Please try again."}}else e.error="Select a File"},copy:function(){document.getElementById("link-div").select(),document.execCommand("Copy"),this.copy_title="copied"},show_links:function(){this.showing_links=!0},close_links:function(){this.showing_links=!1}}});
+    </script>
+</body>
